@@ -30,6 +30,14 @@
     margin-right: 10px;
   }
   
+  .texts input {
+    flex: 1;
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
   .add-task button {
     padding: 10px 15px;
     background-color: #28a745;
@@ -52,6 +60,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 400px;
     padding: 10px;
     margin-bottom: 10px;
     background-color: #fff;
@@ -76,4 +85,33 @@
   .task-list .delete-btn:hover {
     background-color: #c82333;
   }
+
+  .task-list .edit-btn {
+    padding: 5px 10px;
+    background-color: #0000ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
   
+  .task-list .edit-btn:hover {
+    background-color: #000ff0;
+  }
+  
+  ul li .texts {
+    display: flex;
+    max-width: 360px;
+  }
+
+  ul li .buttons {
+    display: flex;
+    max-width: 360px;
+  }
+
+  ul li span {
+    display: block;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }

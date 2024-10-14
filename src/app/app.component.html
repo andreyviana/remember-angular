@@ -1,18 +1,36 @@
 <main class="todo-container">
-  <div class="add-task">
+  <div class="add-task">  
       <input type="text" #todoText placeholder="ADD NEW TODO">
       <button (click)="addTask(todoText.value)">Add</button>
   </div>
   
   <ul class="task-list">
       <li *ngFor="let todoItem of todoList"  [ngClass]="{'completed': todoItem.completed}">
+        <div class="texts">
           <input
               type="checkbox"
               [(checked)]="todoItem.completed"
               (change)="toggleCompleted(todoItem.id)"
           />
-          <span [class.completed]="todoItem.completed">{{ todoItem.task }}</span>
-          <button class="delete-btn" (click)="deleteTask(todoItem.id)">Delete</button>
+          @if(todoItem.onEditMode) {
+            <input 
+              type="text"
+              [(ngModel)]="newTask"
+              [placeholder]="todoItem.task"
+            />
+          } @else {
+            <span title="{{ todoItem.task }}" [class.completed]="todoItem.completed">{{ todoItem.task }}</span>
+          }
+        </div>
+        <div class="buttons">
+          @if(todoItem.onEditMode) {
+            <button class="edit-btn" (click)="editTask(todoItem.id, newTask)">Save</button>
+            <button class="delete-btn" (click)="toggleEditMode(todoItem.id)">Cancel</button>
+          } @else {
+            <button class="edit-btn" (click)="toggleEditMode(todoItem.id)">Edit</button>
+            <button class="delete-btn" (click)="deleteTask(todoItem.id)">Delete</button>
+          }
+        </div>
       </li>
   </ul>
 </main>
