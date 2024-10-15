@@ -1,33 +1,41 @@
 <main class="todo-container">
-  <div class="add-task">  
-      <input type="text" #todoText placeholder="ADD NEW TODO">
-      <button (click)="addTask(todoText.value)">Add</button>
-  </div>
+    <form class="add-task" [formGroup]="addTaskForm" (ngSubmit)="handleAddSubmit()">
+      <input
+        class="add-task-input" 
+        type="text" 
+        formControlName="task" 
+        placeholder="ADD NEW TODO"
+        autofocus
+      >
+      <button type="submit">Add</button>
+    </form>
   
   <ul class="task-list">
       <li *ngFor="let todoItem of todoList"  [ngClass]="{'completed': todoItem.completed}">
         <div class="texts">
           <input
-              type="checkbox"
-              [(checked)]="todoItem.completed"
-              (change)="toggleCompleted(todoItem.id)"
+          type="checkbox"
+          [(checked)]="todoItem.completed"
+          (change)="toggleCompleted(todoItem.id)"
           />
           @if(todoItem.onEditMode) {
-            <input 
-              type="text"
-              [(ngModel)]="newTask"
-              [placeholder]="todoItem.task"
-            />
+            <form [formGroup]="editTaskForm" (ngSubmit)="handleEditSubmit(todoItem.id)">
+              <input
+                type="text"
+                autofocus
+                formControlName="task"
+              />
+            </form>
           } @else {
             <span title="{{ todoItem.task }}" [class.completed]="todoItem.completed">{{ todoItem.task }}</span>
           }
         </div>
         <div class="buttons">
           @if(todoItem.onEditMode) {
-            <button class="edit-btn" (click)="editTask(todoItem.id, newTask)">Save</button>
-            <button class="delete-btn" (click)="toggleEditMode(todoItem.id)">Cancel</button>
+            <button class="edit-btn" (click)="handleEditSubmit(todoItem.id)">Save</button>
+            <button class="delete-btn" (click)="cancelEditMode(todoItem.id)">Cancel</button>
           } @else {
-            <button class="edit-btn" (click)="toggleEditMode(todoItem.id)">Edit</button>
+            <button class="edit-btn" (click)="editMode(todoItem.id)">Edit</button>
             <button class="delete-btn" (click)="deleteTask(todoItem.id)">Delete</button>
           }
         </div>

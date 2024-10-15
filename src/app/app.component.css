@@ -21,7 +21,7 @@
     margin-bottom: 20px;
   }
   
-  .add-task input {
+  .add-task-input {
     flex: 1;
     padding: 10px;
     font-size: 16px;
@@ -110,8 +110,39 @@
   }
 
   ul li span {
+    max-width: 240px;
     display: block;
     width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .buttons {
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    ul li span {
+      max-width: 50vw;
+    }
+    
+    .texts input {
+      max-width: 50vw;
+    }
+    
+  }
+  
+  @media (max-width: 330px) {
+    .add-task-input {
+      max-width: 50vw;
+    }
+    
+    .texts input {
+      max-width: 35vw;
+    }
+
+    ul li span {
+      max-width: 35vw;
+    }
   }

@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild, NgModule } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgClass, NgFor } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-  export interface TodoItem {
+export interface TodoItem {
   id: number;
   task: string;
   completed: boolean;
@@ -12,24 +12,39 @@ import { FormsModule } from '@angular/forms';
 
 
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
-    imports: [
-      RouterOutlet,
-      NgFor,
-      NgClass,
-      FormsModule
-    ]
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  imports: [
+    RouterOutlet,
+    NgFor,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule
+  ]
 })
 export class AppComponent {
-
   todoList: TodoItem[] = [];
-  newTask: string = '';
-  @ViewChild('todoText') todoInputRef: ElementRef<HTMLInputElement> = null!;
+  
+  addTaskForm = new FormGroup({
+    task: new FormControl(''),
+  });
+  
+  editTaskForm = new FormGroup({
+    task: new FormControl(''),
+  });
 
-  ngOnInit(): void {}
+  handleAddSubmit(): void {
+    if (this.addTaskForm.value.task)
+      this.addTask(this.addTaskForm.value.task);
+  }
+  
+  handleEditSubmit(id: number): void {
+    if (this.editTaskForm.value.task)
+      this.editTask(id, this.editTaskForm.value.task);
+  }
+  
 
   addTask(text: string): void {
     if (text.trim() !== '') {
@@ -40,22 +55,18 @@ export class AppComponent {
             onEditMode: false
         };
         this.todoList.push(newTodoItem);
-        this.todoInputRef.nativeElement.value = '';
+        this.addTaskForm.reset();
     }
   }
 
   editTask(id: number, text: string): void {
-    if (text.trim() !== '') {
-     const todoItemIndex: number = this.todoList.findIndex(item => item.id === id);
-     this.todoList[todoItemIndex].task = text;
+    if (text.trim() !== '') { 
+      const todoItemIndex: number = this.todoList.findIndex(item => item.id === id);
+      this.todoList[todoItemIndex].task = text;
 
-     this.toggleEditMode(id);
-     this.onEditNewTask('');
+      this.cancelEditMode(id);
+      this.editTaskForm.reset();
     }
-  }
-
-  onEditNewTask(newTask: string) {
-    this.newTask = newTask;
   }
 
   deleteTask(id: number): void {
@@ -69,9 +80,24 @@ export class AppComponent {
     }
   }
 
-  toggleEditMode(id: number): void {
+  editMode(id: number): void {
     const todoItem = this.todoList.find(item => item.id === id);
-    if (todoItem) todoItem.onEditMode = !todoItem.onEditMode;
-  }
+    const indexTodoOnEditMode = this.todoList.findIndex(item => item.onEditMode === true);
 
+    if (indexTodoOnEditMode >= 0) 
+      this.todoList[indexTodoOnEditMode].onEditMode = false; 
+
+    if (todoItem) {
+      todoItem.onEditMode = true;
+      if (todoItem.onEditMode) 
+        this.editTaskForm.reset({ task: todoItem.task })
+    }
+  }
+  
+  cancelEditMode(id: number) {
+    const todoItem = this.todoList.find(i => i.id === id);
+    if (todoItem) {
+      todoItem.onEditMode = false;
+    }
+  }
 }
